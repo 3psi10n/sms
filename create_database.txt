@@ -1,0 +1,122 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema new_sms
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema new_sms
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `new_sms` DEFAULT CHARACTER SET latin1 ;
+USE `new_sms` ;
+
+-- -----------------------------------------------------
+-- Table `new_sms`.`accounts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `new_sms`.`accounts` (
+  `account_id` VARCHAR(10) NOT NULL,
+  `_account` VARCHAR(50) NULL DEFAULT NULL,
+  `_password` VARCHAR(200) NULL DEFAULT NULL,
+  `_role` VARCHAR(20) NULL DEFAULT NULL,
+  PRIMARY KEY (`account_id`));
+
+-- -----------------------------------------------------
+-- Table `new_sms`.`school`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `new_sms`.`school` (
+  `school_id` VARCHAR(10) NOT NULL,
+  `school_name` VARCHAR(100) NULL DEFAULT NULL,
+  PRIMARY KEY (`school_id`));
+
+
+-- -----------------------------------------------------
+-- Table `new_sms`.`teachers`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `new_sms`.`teachers` (
+  `teacher_id` VARCHAR(10) NOT NULL,
+  `teacher_name` VARCHAR(100) NOT NULL DEFAULT '',
+  `teacher_mail` VARCHAR(100) NOT NULL DEFAULT '',
+  `teacher_phone` VARCHAR(20) NULL DEFAULT '',
+  `school_id` VARCHAR(100) NOT NULL DEFAULT 'SET',
+  `account_id` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`teacher_id`),
+  INDEX `account_id` (`account_id` ASC) ,
+  INDEX `school_id` (`school_id` ASC) ,
+  CONSTRAINT `teachers_ibfk_1`
+    FOREIGN KEY (`account_id`)
+    REFERENCES `new_sms`.`accounts` (`account_id`),
+  CONSTRAINT `teachers_ibfk_2`
+    FOREIGN KEY (`school_id`)
+    REFERENCES `new_sms`.`school` (`school_id`));
+
+
+-- -----------------------------------------------------
+-- Table `new_sms`.`class`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `new_sms`.`class` (
+  `class_id` VARCHAR(10) NOT NULL,
+  `school_id` VARCHAR(10) NULL DEFAULT NULL,
+  `teacher_id` VARCHAR(10) NULL DEFAULT NULL,
+  `class_name` VARCHAR(100) NULL DEFAULT NULL,
+  PRIMARY KEY (`class_id`),
+  INDEX `school_id` (`school_id` ASC) ,
+  INDEX `teacher_id` (`teacher_id` ASC) ,
+  CONSTRAINT `class_ibfk_1`
+    FOREIGN KEY (`school_id`)
+    REFERENCES `new_sms`.`school` (`school_id`),
+  CONSTRAINT `class_ibfk_2`
+    FOREIGN KEY (`teacher_id`)
+    REFERENCES `new_sms`.`teachers` (`teacher_id`));
+
+
+-- -----------------------------------------------------
+-- Table `new_sms`.`score`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `new_sms`.`score` (
+  `class_id` VARCHAR(10) NOT NULL,
+  `student_id` VARCHAR(10) NOT NULL,
+  `score` VARCHAR(10) NULL DEFAULT NULL,
+  `note` VARCHAR(100) NULL DEFAULT NULL,
+  INDEX `class_id` (`class_id` ASC) ,
+  CONSTRAINT `score_ibfk_1`
+    FOREIGN KEY (`class_id`)
+    REFERENCES `new_sms`.`class` (`class_id`));
+
+
+-- -----------------------------------------------------
+-- Table `new_sms`.`students`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `new_sms`.`students` (
+  `student_id` VARCHAR(10) NOT NULL,
+  `student_name` VARCHAR(100) NOT NULL DEFAULT '',
+  `student_mail` VARCHAR(100) NOT NULL DEFAULT '',
+  `student_address` VARCHAR(100) NULL DEFAULT '',
+  `student_dob` DATE NOT NULL DEFAULT '2000-01-01',
+  `school_id` VARCHAR(100) NOT NULL DEFAULT 'SET',
+  `account_id` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`student_id`),
+  INDEX `account_id` (`account_id` ASC) ,
+  INDEX `school_id` (`school_id` ASC) ,
+  CONSTRAINT `students_ibfk_1`
+    FOREIGN KEY (`account_id`)
+    REFERENCES `new_sms`.`accounts` (`account_id`),
+  CONSTRAINT `students_ibfk_2`
+    FOREIGN KEY (`school_id`)
+    REFERENCES `new_sms`.`school` (`school_id`));
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+
+
+
